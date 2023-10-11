@@ -189,17 +189,32 @@ struct cntrl_device *block_get_controller(const struct list *cntrl_list, char *p
 {
 	struct cntrl_device *cntrl;
 	struct cntrl_device *non_npem_cntrl = NULL;
+	char *board_vendor;
+	char is_amd_board = 0;
 
 	if (!cntrl_list || !path)
 		return non_npem_cntrl;
+	/* 
+	 * Avoid errors in the NVMe control path;
+	 * Note: Users may need to customize it.
+	*/
+	board_vendor = get_text("/sys/class/dmi/id", "board_vendor");
+	if (strncmp(board_vendor, "AMD", 3) == 0)
+		is_amd_board = 1;
 
 	list_for_each(cntrl_list, cntrl) {
 		if (cntrl) {
 			if (strncmp(cntrl->sysfs_path, path,
 				strnlen(cntrl->sysfs_path, PATH_MAX)) == 0) {
-				if (cntrl->cntrl_type == LED_CNTRL_TYPE_NPEM)
-					return cntrl;
-				non_npem_cntrl = cntrl;
+				if (is_amd_board) {
+					if (cntrl->cntrl_type == LED_CNTRL_TYPE_AMD) {
+						return cntrl;
+					}
+				} else {
+					if (cntrl->cntrl_type == LED_CNTRL_TYPE_NPEM)
+						return cntrl;
+					non_npem_cntrl = cntrl;
+				}
 			}
 		}
 	}
