@@ -59,7 +59,8 @@
 	OPT_WARNING,		\
 	OPT_LOG,		\
 	OPT_LOG_LEVEL,		\
-	OPT_TEST
+	OPT_TEST,		\
+	OPT_AMD_OPS
 #else
 #define COMMON_GETOPT_ARGS	\
 	OPT_ALL,		\
@@ -69,7 +70,8 @@
 	OPT_QUIET,		\
 	OPT_WARNING,		\
 	OPT_LOG,		\
-	OPT_LOG_LEVEL
+	OPT_LOG_LEVEL,		\
+	OPT_AMD_OPS
 #endif
 
 struct map ledctl_status_map[] = {
@@ -725,6 +727,8 @@ bool _cmdline_parse_params(int opt, int opt_index, struct option *longopts, stru
 			else
 				return false;
 			break;
+		case OPT_AMD_OPS:
+			using_amd_raw_register_ops = 1;
 		default:
 			set_verbose_level(&conf, possible_params[opt_index]);
 		}

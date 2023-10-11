@@ -606,8 +606,12 @@ struct option longopt_all[] = {
 	[OPT_SLOT]         = {"slot", required_argument, NULL, 'p'},
 	[OPT_STATE]        = {"state", required_argument, NULL, 's'},
 	[OPT_TEST]         = {"test", no_argument, NULL, 'T'},
+	[OPT_AMD_OPS]      = {"amd-raw-register", no_argument, NULL, '\0'},
 	[OPT_NULL_ELEMENT] = {NULL, no_argument, NULL, '\0'}
 };
+
+/* For amd led ctrl method selection */
+int using_amd_raw_register_ops = 0;
 
 void setup_options(struct option **_longopt, char **_shortopt, int *options, int
 		options_nr)
