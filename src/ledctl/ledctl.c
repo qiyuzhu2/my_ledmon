@@ -729,6 +729,7 @@ bool _cmdline_parse_params(int opt, int opt_index, struct option *longopts, stru
 			break;
 		case OPT_AMD_OPS:
 			using_amd_raw_register_ops = 1;
+			break;
 		default:
 			set_verbose_level(&conf, possible_params[opt_index]);
 		}
