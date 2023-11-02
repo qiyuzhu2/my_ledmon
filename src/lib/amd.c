@@ -43,6 +43,7 @@
 #include "utils.h"
 #include "amd.h"
 #include "amd_sgpio.h"
+#include "amd_raw_register.h"
 #include "amd_ipmi.h"
 #include "libled_private.h"
 
@@ -124,13 +125,20 @@ int amd_em_enabled(const char *path, struct led_ctx *ctx)
 		amd_interface = AMD_INTF_IPMI;
 		amd_ipmi_platform = AMD_PLATFORM_DAYTONA_X;
 	}
-
+	/* Universal to all platforms */
+	if (using_amd_raw_register_ops) {
+		amd_interface = AMD_INTF_RAW_REGISTER;
+		amd_ipmi_platform = AMD_PLATFORM_UNSET;
+	}
 	switch (amd_interface) {
 	case AMD_INTF_SGPIO:
 		rc = _amd_sgpio_em_enabled(path, ctx);
 		break;
 	case AMD_INTF_IPMI:
 		rc = _amd_ipmi_em_enabled(path, ctx);
+		break;
+	case AMD_INTF_RAW_REGISTER:
+		rc = _amd_raw_register_em_enabled(path, ctx);
 		break;
 	default:
 		lib_log(ctx, LED_LOG_LEVEL_ERROR,
@@ -157,6 +165,9 @@ int amd_write(struct block_device *device, enum led_ibpi_pattern ibpi)
 	case AMD_INTF_IPMI:
 		rc = _amd_ipmi_write(device, ibpi);
 		break;
+	case AMD_INTF_RAW_REGISTER:
+		rc = _amd_raw_register_write(device, ibpi);
+		break;
 	case AMD_INTF_UNSET:
 	default:
 		lib_log(device->cntrl->ctx, LED_LOG_LEVEL_ERROR,
@@ -178,6 +189,9 @@ char *amd_get_path(const char *cntrl_path, const char *sysfs_path, struct led_ct
 		break;
 	case AMD_INTF_IPMI:
 		path = _amd_ipmi_get_path(cntrl_path, sysfs_path);
+		break;
+	case AMD_INTF_RAW_REGISTER:
+		path = _amd_raw_register_get_path(sysfs_path, ctx);
 		break;
 	case AMD_INTF_UNSET:
 	default:

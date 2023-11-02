@@ -478,11 +478,13 @@ enum opt {
 	OPT_DEVICE,
 	OPT_SLOT,
 	OPT_STATE,
-	OPT_IBPI_MODE,
 	OPT_TEST,
+	OPT_AMD_OPS,
+	OPT_IBPI_MODE,
 	OPT_NULL_ELEMENT
 };
 
+extern int using_amd_raw_register_ops;
 extern struct option longopt_all[];
 void setup_options(struct option **longopt, char **shortopt, int *options,
 			int options_nr);
